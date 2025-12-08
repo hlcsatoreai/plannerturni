@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<!-- saved from url=(0132)file:///C:/Users/utente/AppData/Local/Temp/d69491b3-63ba-4497-bd31-cf5949bd532c_planner_turni_calendario_completo.zip.32c/index.html -->
+<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Planner Turni – Calendario Completo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #020617;
+      --card: #020617;
+      --border: #1f2937;
+      --accent: #38bdf8;
+      --accent2: #22c55e;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 50%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 960px;
+      padding: 20px 12px 40px;
+    }
+
+    header {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .logo-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo-title { font-weight: 700; letter-spacing: 0.03em; }
+    .logo-sub { font-size: 0.7rem; color: var(--muted); }
+
+    .pill-small {
+      font-size: 0.7rem;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 18px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 12px 12px 16px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+    }
+
+    .month-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .month-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .month-buttons {
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .btn-ghost {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.78rem;
+    }
+
+    .btn-ghost.primary {
+      border-color: rgba(56, 189, 248, 0.7);
+      color: #e0f2fe;
+    }
+
+    .btn-ghost.danger {
+      border-color: rgba(248, 113, 113, 0.7);
+      color: #fecaca;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      font-size: 0.78rem;
+    }
+
+    .day-name {
+      text-align: center;
+      color: var(--muted);
+      padding: 4px 0;
+    }
+
+    .day-cell {
+      min-height: 70px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 4px 4px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+    }
+
+    .day-cell.other-month {
+      opacity: 0.25;
+    }
+
+    .day-number {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .day-number.today {
+      color: #fde68a;
+      font-weight: 600;
+    }
+
+    .shifts {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-top: 2px;
+    }
+
+    .shift-btn {
+      border-radius: 6px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+      font-size: 0.7rem;
+      padding: 2px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      gap: 4px;
+      transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, transform 0.05s ease;
+    }
+
+    .shift-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .shift-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    .shift-btn.active {
+      background: rgba(34, 197, 94, 0.16);
+      border-color: var(--accent2);
+      color: #bbf7d0;
+    }
+
+    .shift-btn.active .shift-dot {
+      background: var(--accent2);
+    }
+
+    .legend {
+      margin-top: 10px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 7px;
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid var(--accent2);
+    }
+
+    footer {
+      margin-top: 10px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      .logo-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+<style type="text/css" id="operaUserStyle"></style></head>
+<body>
+  <div class="page">
+    <header>
+      <div class="logo-row">
+        <div class="logo">
+          <div class="logo-badge">📆</div>
+          <div>
+            <div class="logo-title">Planner Turni – Calendario Completo</div>
+            <div class="logo-sub">Mattina, Pomeriggio e Notte per tutti i mesi, tutti gli anni.</div>
+          </div>
+        </div>
+        <div class="pill-small">
+          <span class="pill-dot"></span>
+          <span>Dati salvati sul dispositivo</span>
+        </div>
+      </div>
+      <p class="subtitle">
+        Tocca i blocchi Mattina / Pomeriggio / Notte in ogni giorno per segnarli in verde. Puoi cambiare mese e anno
+        con le frecce. Tutto resta salvato in localStorage sullo stesso telefono.
+      </p>
+    </header>
+
+    <section class="card">
+      <div class="month-header">
+        <div class="month-title" id="monthTitle">dicembre 2025</div>
+        <div class="month-buttons">
+          <button class="btn-ghost" id="prevYearBtn">« anno</button>
+          <button class="btn-ghost" id="prevMonthBtn">‹ mese</button>
+          <button class="btn-ghost primary" id="todayBtn">oggi</button>
+          <button class="btn-ghost" id="nextMonthBtn">mese ›</button>
+          <button class="btn-ghost" id="nextYearBtn">anno »</button>
+        </div>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid"><div class="day-name">lun</div><div class="day-name">mar</div><div class="day-name">mer</div><div class="day-name">gio</div><div class="day-name">ven</div><div class="day-name">sab</div><div class="day-name">dom</div><div class="day-cell"><div class="day-number">1</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">2</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">3</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">4</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">5</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">6</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">7</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number today">8</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">9</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">10</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">11</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">12</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">13</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">14</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">15</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">16</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">17</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">18</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">19</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">20</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">21</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">22</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">23</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">24</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">25</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">26</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">27</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">28</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">29</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">30</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell"><div class="day-number">31</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">1</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">2</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">3</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">4</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">5</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">6</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">7</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">8</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">9</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">10</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div><div class="day-cell other-month"><div class="day-number">11</div><div class="shifts"><button type="button" class="shift-btn"><span class="shift-tag">mattina</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">pomeriggio</span><span class="shift-dot"></span></button><button type="button" class="shift-btn"><span class="shift-tag">notte</span><span class="shift-dot"></span></button></div></div></div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color"></div>
+          <span>Verde = turno in cui lavora (Mattina / Pomeriggio / Notte)</span>
+        </div>
+      </div>
+
+      <div style="margin-top:8px; display:flex; justify-content:flex-end;">
+        <button class="btn-ghost danger" id="clearAllBtn">Cancella tutti i turni salvati</button>
+      </div>
+    </section>
+
+    <footer>
+      Consiglio: apri questo file su Safari &gt; Condividi &gt; “Aggiungi a schermata Home” per usarlo come app sul telefono.
+    </footer>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "planner_turni_calendario_completo_v1";
+    const monthNames = [
+      "gennaio","febbraio","marzo","aprile","maggio","giugno",
+      "luglio","agosto","settembre","ottobre","novembre","dicembre"
+    ];
+    const dayNames = ["lun","mar","mer","gio","ven","sab","dom"];
+    const shifts = ["mattina","pomeriggio","notte"];
+
+    let current = new Date();
+    current.setDate(1); // inizio mese
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return {};
+        return JSON.parse(raw) || {};
+      } catch (e) {
+        console.error("Errore loadState", e);
+        return {};
+      }
+    }
+
+    function saveState(state) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error("Errore saveState", e);
+      }
+    }
+
+    let state = loadState();
+
+    function dateKey(date, shift) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return y + "-" + m + "-" + d + "_" + shift;
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById("calendarGrid");
+      grid.innerHTML = "";
+
+      const titleEl = document.getElementById("monthTitle");
+      titleEl.textContent = monthNames[current.getMonth()] + " " + current.getFullYear();
+
+      // Intestazione giorni
+      dayNames.forEach((name) => {
+        const div = document.createElement("div");
+        div.className = "day-name";
+        div.textContent = name;
+        grid.appendChild(div);
+      });
+
+      const firstDayOfMonth = new Date(current.getFullYear(), current.getMonth(), 1);
+      const lastDayOfMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0);
+
+      // Calcolo indice del primo giorno (0 = lunedì)
+      let startIndex = firstDayOfMonth.getDay(); // 0 domenica, 1 lunedì...
+      if (startIndex === 0) startIndex = 7;
+      startIndex = startIndex - 1;
+
+      const daysInMonth = lastDayOfMonth.getDate();
+
+      // Giorni del mese precedente da mostrare (per riempire la prima riga)
+      const prevMonthLastDay = new Date(current.getFullYear(), current.getMonth(), 0);
+      const daysInPrevMonth = prevMonthLastDay.getDate();
+
+      const totalCells = 42; // 6 righe x 7 giorni
+
+      for (let i = 0; i < totalCells; i++) {
+        const cell = document.createElement("div");
+        cell.className = "day-cell";
+
+        let cellDate;
+        let otherMonth = false;
+
+        if (i < startIndex) {
+          // giorni del mese precedente
+          const day = daysInPrevMonth - (startIndex - 1 - i);
+          cellDate = new Date(current.getFullYear(), current.getMonth() - 1, day);
+          otherMonth = true;
+        } else if (i >= startIndex + daysInMonth) {
+          // giorni del mese successivo
+          const day = i - (startIndex + daysInMonth) + 1;
+          cellDate = new Date(current.getFullYear(), current.getMonth() + 1, day);
+          otherMonth = true;
+        } else {
+          const day = i - startIndex + 1;
+          cellDate = new Date(current.getFullYear(), current.getMonth(), day);
+        }
+
+        if (otherMonth) {
+          cell.classList.add("other-month");
+        }
+
+        const num = document.createElement("div");
+        num.className = "day-number";
+
+        const today = new Date();
+        if (
+          cellDate.getFullYear() === today.getFullYear() &&
+          cellDate.getMonth() === today.getMonth() &&
+          cellDate.getDate() === today.getDate()
+        ) {
+          num.classList.add("today");
+        }
+
+        num.textContent = cellDate.getDate();
+        cell.appendChild(num);
+
+        const shiftsContainer = document.createElement("div");
+        shiftsContainer.className = "shifts";
+
+        shifts.forEach((shift) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "shift-btn";
+
+          const left = document.createElement("span");
+          left.className = "shift-tag";
+          left.textContent = shift;
+
+          const dot = document.createElement("span");
+          dot.className = "shift-dot";
+
+          btn.appendChild(left);
+          btn.appendChild(dot);
+
+          const key = dateKey(cellDate, shift);
+          if (state[key]) {
+            btn.classList.add("active");
+          }
+
+          btn.addEventListener("click", () => {
+            const active = btn.classList.toggle("active");
+            if (active) {
+              state[key] = true;
+            } else {
+              delete state[key];
+            }
+            saveState(state);
+          });
+
+          shiftsContainer.appendChild(btn);
+        });
+
+        cell.appendChild(shiftsContainer);
+        grid.appendChild(cell);
+      }
+    }
+
+    document.getElementById("prevMonthBtn").addEventListener("click", () => {
+      current.setMonth(current.getMonth() - 1);
+      renderCalendar();
+    });
+    document.getElementById("nextMonthBtn").addEventListener("click", () => {
+      current.setMonth(current.getMonth() + 1);
+      renderCalendar();
+    });
+    document.getElementById("prevYearBtn").addEventListener("click", () => {
+      current.setFullYear(current.getFullYear() - 1);
+      renderCalendar();
+    });
+    document.getElementById("nextYearBtn").addEventListener("click", () => {
+      current.setFullYear(current.getFullYear() + 1);
+      renderCalendar();
+    });
+    document.getElementById("todayBtn").addEventListener("click", () => {
+      const today = new Date();
+      current = new Date(today.getFullYear(), today.getMonth(), 1);
+      renderCalendar();
+    });
+
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      if (!confirm("Vuoi davvero cancellare tutti i turni salvati per tutti i mesi?")) return;
+      state = {};
+      saveState(state);
+      renderCalendar();
+    });
+
+    renderCalendar();
+  </script>
+
+
+</body></html>
