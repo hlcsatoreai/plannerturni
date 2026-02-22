@@ -74,6 +74,7 @@
         const [frontRunGems, setFrontRunGems] = useState([]);
         const [quickAdvice, setQuickAdvice] = useState('');
         const [buyNowPlan, setBuyNowPlan] = useState([]);
+        const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
         const pushNotify = (title, body) => {
           if (!('Notification' in window) || Notification.permission !== 'granted') return;
@@ -271,25 +272,47 @@
         }, [opportunities, riskMeta.fearGreed, panicShopping]);
 
 
-        const handleBuyNow = () => {
-          const picks = opportunities.slice(0, 3).map((coin) => ({
-            id: coin.id,
-            name: coin.name,
-            symbol: coin.symbol,
-            buyPrice: coin.entry,
-            sellPrice: coin.step1,
-            sellPrice2: coin.step2,
-            confidence: coin.confidence
-          }));
+        const normalizePicks = (list) => list.slice(0, 3).map((coin) => ({
+          id: coin.id,
+          name: coin.name,
+          symbol: coin.symbol,
+          buyPrice: coin.entry ?? coin.current_price,
+          sellPrice: coin.step1 ?? ((coin.entry ?? coin.current_price) * 1.1),
+          sellPrice2: coin.step2 ?? ((coin.entry ?? coin.current_price) * 1.25),
+          confidence: coin.confidence || 'Giallo (Moderata)'
+        }));
 
-          if (!picks.length) {
-            setQuickAdvice('Dati ancora in caricamento: riprova tra qualche secondo.');
-            setBuyNowPlan([]);
-            return;
+        const handleBuyNow = async () => {
+          setIsBuyNowLoading(true);
+          let picks = normalizePicks(opportunities);
+
+          if (!picks.length && coins.length) {
+            const fromCoins = [...coins]
+              .sort((a, b) => ((b.hype || 0) + (b.price_change_percentage_24h || 0)) - ((a.hype || 0) + (a.price_change_percentage_24h || 0)))
+              .map((coin) => ({ ...coin, entry: coin.current_price, step1: coin.current_price * 1.1, step2: coin.current_price * 1.25 }));
+            picks = normalizePicks(fromCoins);
           }
 
-          setQuickAdvice(`Analisi live completata: queste sono 3 crypto con livelli d'ingresso e uscita in Euro.`);
+          if (!picks.length) {
+            await loadData();
+            picks = normalizePicks(opportunities);
+          }
+
+          if (!picks.length) {
+            const fallback = dynamicFallback().map((coin) => ({
+              ...coin,
+              entry: coin.current_price,
+              step1: coin.current_price * 1.1,
+              step2: coin.current_price * 1.25,
+              confidence: 'Giallo (Moderata)'
+            }));
+            picks = normalizePicks(fallback);
+          }
+
+          setQuickAdvice(`Analisi live completata: ecco 3 crypto con livelli d'ingresso e uscita in Euro.`);
           setBuyNowPlan(picks);
+          setIsBuyNowLoading(false);
+          requestAnimationFrame(() => document.getElementById('buy-now-report')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
         };
 
         const defensiveMode = riskMeta.fearGreed < 20 || riskMeta.btcDominance < 45;
@@ -306,12 +329,12 @@
               React.createElement('div', { className: 'flex flex-wrap gap-2' },
                 React.createElement('button', { className: 'rounded-lg border border-gold-400 px-3 py-2 text-gold-300', onClick: () => Notification?.requestPermission?.() }, 'Attiva Notifiche'),
                 React.createElement('button', { className: 'rounded-lg border border-slate-500 px-3 py-2 text-slate-200', onClick: loadData }, 'Aggiorna Crypto Ora'),
-                React.createElement('button', { className: 'rounded-lg bg-gold-500 px-3 py-2 font-semibold text-black', onClick: handleBuyNow }, 'Cosa Compro Ora?')
+                React.createElement('button', { className: 'rounded-lg bg-gold-500 px-3 py-2 font-semibold text-black', onClick: handleBuyNow }, isBuyNowLoading ? 'Analizzo…' : 'Cosa Compro Ora?')
               )
             ),
 
 
-            quickAdvice && React.createElement('section', { className: 'mb-4 rounded-xl border border-gold-400/30 bg-gold-500/10 p-4' },
+            quickAdvice && React.createElement('section', { id: 'buy-now-report', className: 'mb-4 rounded-xl border border-gold-400/30 bg-gold-500/10 p-4' },
               React.createElement('div', { className: 'flex items-start justify-between gap-3' },
                 React.createElement('div', null,
                   React.createElement('h2', { className: 'text-lg font-semibold text-gold-300 mb-1' }, 'Consiglio del minuto'),
