@@ -1,0 +1,13 @@
+project_id = "crypto-war-machine-ultra"
+
+[functions.fetch_binance_data]
+verify_jwt = false
+
+[functions.fetch_fundamentals]
+verify_jwt = false
+
+[functions.fetch_news_sentiment]
+verify_jwt = false
+
+[functions.compute_signals]
+verify_jwt = false
